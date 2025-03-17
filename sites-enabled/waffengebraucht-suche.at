@@ -1,0 +1,45 @@
+# Default server configuration
+#
+server {
+	listen 80;
+	listen [::]:80;
+
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl;
+	listen [::]:443 ssl;
+	server_name waffengebraucht-suche.at;
+
+	ssl_certificate /etc/nginx/fullchain1.pem;
+	ssl_certificate_key /etc/nginx/privkey1.pem;
+	ssl_protocols TLSv1.2 TLSv1.3;
+	
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ /index.html;
+	}
+
+	location /be {
+		proxy_pass http://crawler:3000;
+	}
+
+	# keycloak config ... for safe keeping	
+	#location /kc {
+	#	proxy_set_header HOST $host;
+	#	proxy_set_header X-Real-IP $remote_addr;
+	#	proxy_set_header X-Forwarded-Host $host;
+	#	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	#	proxy_set_header X-Forwarded-Proto $scheme;
+
+	#	proxy_pass http://keycloak:8080;
+	#}
+
+}
