@@ -27,7 +27,7 @@ server {
 		try_files $uri $uri/ /index.html;
 	}
 
-	location /be {
+	location /api {
 		proxy_pass http://crawler:3000;
 	}
 
